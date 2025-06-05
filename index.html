@@ -1,171 +1,221 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Thiranex Attendance Tracker</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Thiranex Attendance | Next-Gen Tracker</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
-
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=Unbounded:wght@700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
   <style>
     :root {
-      --primary: #4361ee;
-      --primary-dark: #3a0ca3;
-      --primary-light: #4895ef;
-      --secondary: #f72585;
-      --accent: #4cc9f0;
-      --dark: #14213d;
-      --light: #f8f9fa;
-      --gray: #adb5bd;
-      --success: #2ecc71;
-      --warning: #f39c12;
-      --danger: #e74c3c;
+      --neon-blue: #00f5ff;
+      --neon-pink: #ff00e4;
+      --neon-purple: #9d00ff;
+      --dark-space: #0a0a1a;
+      --space-gray: #1a1a2e;
+      --star-white: #e6f1ff;
+      --electric-green: #00ff9d;
+      --warning-orange: #ff9500;
+      --error-red: #ff2d55;
     }
 
-    /* Base Styles */
-    *, *::before, *::after {
-      box-sizing: border-box;
+    * {
       margin: 0;
       padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
     }
 
     body {
-      font-family: 'Poppins', sans-serif;
-      background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
-      color: var(--dark);
+      font-family: 'Manrope', sans-serif;
+      background-color: var(--dark-space);
+      color: var(--star-white);
       min-height: 100vh;
-      padding: 2rem 1rem;
-      line-height: 1.6;
+      padding: 1rem;
+      overflow-x: hidden;
+      background-image: 
+        radial-gradient(circle at 10% 20%, rgba(157, 0, 255, 0.1) 0%, transparent 20%),
+        radial-gradient(circle at 90% 80%, rgba(0, 245, 255, 0.1) 0%, transparent 20%);
     }
 
-    /* Glassmorphism Container */
+    /* Cyberpunk Glow Effect */
+    @keyframes cyber-glow {
+      0%, 100% { text-shadow: 0 0 10px var(--neon-blue), 0 0 20px var(--neon-blue); }
+      50% { text-shadow: 0 0 20px var(--neon-pink), 0 0 30px var(--neon-purple); }
+    }
+
+    /* Floating Animation */
+    @keyframes floating {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    /* Pulse Animation */
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.05); opacity: 0.8; }
+    }
+
+    /* Neon Border Animation */
+    @keyframes neon-border {
+      0% { box-shadow: 0 0 5px var(--neon-blue), 0 0 10px var(--neon-blue); }
+      50% { box-shadow: 0 0 15px var(--neon-pink), 0 0 25px var(--neon-purple); }
+      100% { box-shadow: 0 0 5px var(--neon-blue), 0 0 10px var(--neon-blue); }
+    }
+
     .container {
-      background: rgba(255, 255, 255, 0.85);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border-radius: 24px;
-      border: 1px solid rgba(255, 255, 255, 0.18);
-      box-shadow: 0 8px 32px rgba(31, 38, 135, 0.15);
-      padding: 2.5rem;
-      max-width: 1000px;
+      max-width: 1200px;
       margin: 0 auto;
-      position: relative;
+      background: rgba(10, 10, 26, 0.7);
+      backdrop-filter: blur(20px);
+      border-radius: 24px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
       overflow: hidden;
-      animation: fadeIn 0.6s ease-out;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+      position: relative;
+      z-index: 1;
+      animation: fadeIn 0.8s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     .container::before {
       content: '';
       position: absolute;
-      top: -50%;
-      left: -50%;
-      width: 200%;
-      height: 200%;
-      background: radial-gradient(circle, rgba(67, 97, 238, 0.1) 0%, rgba(255,255,255,0) 70%);
-      z-index: -1;
-      animation: rotate 20s linear infinite;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--neon-blue), var(--neon-pink), var(--neon-purple));
+      z-index: 2;
     }
 
-    /* Typography */
-    h1 {
-      font-family: 'Space Grotesk', sans-serif;
-      font-weight: 700;
-      font-size: 2.8rem;
+    /* Header Styles */
+    .header {
+      padding: 2rem 2rem 1rem;
       text-align: center;
-      color: var(--primary-dark);
-      margin-bottom: 0.5rem;
-      background: linear-gradient(90deg, var(--primary-dark), var(--primary-light));
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-      letter-spacing: -0.5px;
-    }
-
-    .subtitle {
-      text-align: center;
-      font-size: 1.1rem;
-      color: var(--dark);
-      opacity: 0.8;
-      margin-bottom: 2.5rem;
-      font-weight: 400;
-      max-width: 600px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-
-    /* Form Elements */
-    .form-group {
-      margin-bottom: 1.8rem;
       position: relative;
     }
 
-    label {
+    .header h1 {
+      font-family: 'Unbounded', sans-serif;
+      font-weight: 800;
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      background: linear-gradient(90deg, var(--neon-blue), var(--neon-pink));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      margin-bottom: 0.5rem;
+      letter-spacing: -0.03em;
+      animation: cyber-glow 4s infinite alternate;
+    }
+
+    .header p {
+      font-size: clamp(0.9rem, 3vw, 1.1rem);
+      color: rgba(230, 241, 255, 0.7);
+      max-width: 600px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    /* Form Elements */
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+      padding: 0 2rem;
+    }
+
+    .form-group {
+      position: relative;
+      margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
       display: block;
-      margin-bottom: 0.6rem;
-      font-weight: 500;
-      color: var(--dark);
+      margin-bottom: 0.75rem;
+      font-weight: 600;
       font-size: 0.95rem;
+      color: var(--neon-blue);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
     }
 
-    input[type="date"], select {
+    .form-control {
       width: 100%;
-      padding: 1rem 1.2rem;
+      padding: 1rem 1.25rem;
       font-size: 1rem;
+      background: rgba(26, 26, 46, 0.7);
+      border: 1px solid rgba(0, 245, 255, 0.3);
       border-radius: 12px;
-      border: 1px solid rgba(67, 97, 238, 0.3);
-      background: rgba(255, 255, 255, 0.7);
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      color: var(--dark);
+      color: var(--star-white);
       font-weight: 500;
-      box-shadow: 0 2px 8px rgba(67, 97, 238, 0.05);
-      appearance: none;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
 
-    input[type="date"]:focus, select:focus {
+    .form-control:focus {
       outline: none;
-      border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
-      background: white;
+      border-color: var(--neon-pink);
+      box-shadow: 0 0 0 3px rgba(255, 0, 228, 0.2);
+      background: rgba(26, 26, 46, 0.9);
     }
 
-    /* Table Styles */
+    /* 3D Card Effect */
+    .card-3d {
+      transform-style: preserve-3d;
+      transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .card-3d:hover {
+      transform: translateY(-5px) rotateX(5deg);
+    }
+
+    /* Attendance Table */
+    .table-container {
+      padding: 0 2rem 2rem;
+      position: relative;
+    }
+
     .table-wrapper {
       border-radius: 16px;
       overflow: hidden;
-      margin: 2rem 0;
-      box-shadow: 0 10px 30px rgba(67, 97, 238, 0.1);
-      animation: slideUp 0.5s ease-out;
-      transform-origin: top;
+      margin-top: 1.5rem;
+      border: 1px solid rgba(0, 245, 255, 0.2);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      background: rgba(26, 26, 46, 0.6);
+      backdrop-filter: blur(10px);
+      animation: slideInUp 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .table-scroll {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
     }
 
     table {
       width: 100%;
-      border-collapse: collapse;
-      background: white;
       min-width: 600px;
+      border-collapse: collapse;
     }
 
     thead {
-      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
-      color: white;
-    }
-
-    th, td {
-      padding: 1.2rem 1.5rem;
-      text-align: left;
+      background: linear-gradient(90deg, var(--neon-purple), var(--neon-pink));
     }
 
     th {
-      font-weight: 600;
-      letter-spacing: 0.5px;
-      font-family: 'Space Grotesk', sans-serif;
+      padding: 1.25rem 1.5rem;
+      text-align: left;
+      font-weight: 700;
+      color: white;
+      text-transform: uppercase;
+      font-size: 0.85rem;
+      letter-spacing: 0.05em;
     }
 
     tbody tr {
-      border-bottom: 1px solid rgba(67, 97, 238, 0.1);
+      border-bottom: 1px solid rgba(0, 245, 255, 0.1);
       transition: all 0.3s ease;
     }
 
@@ -174,277 +224,304 @@
     }
 
     tbody tr:hover {
-      background: rgba(67, 97, 238, 0.03);
-      transform: translateX(4px);
+      background: rgba(0, 245, 255, 0.05);
     }
 
-    select.attendance-select {
-      padding: 0.6rem 1rem;
+    td {
+      padding: 1.25rem 1.5rem;
+      position: relative;
+    }
+
+    /* Status Selector */
+    .status-select {
+      appearance: none;
+      padding: 0.75rem 1rem;
       border-radius: 8px;
-      border: 1px solid rgba(67, 97, 238, 0.3);
-      background: rgba(67, 97, 238, 0.05);
-      font-weight: 500;
-      color: var(--primary-dark);
+      border: 1px solid rgba(0, 245, 255, 0.3);
+      background: rgba(26, 26, 46, 0.8);
+      color: var(--star-white);
+      font-weight: 600;
       cursor: pointer;
       transition: all 0.3s ease;
-      min-width: 120px;
+      min-width: 140px;
+      text-align: center;
+      background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2300f5ff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+      background-repeat: no-repeat;
+      background-position: right 0.75rem center;
+      background-size: 1rem;
     }
 
-    select.attendance-select:hover {
-      background: rgba(67, 97, 238, 0.1);
-      border-color: var(--primary);
+    .status-select:focus {
+      border-color: var(--neon-pink);
+      box-shadow: 0 0 0 2px rgba(255, 0, 228, 0.2);
+    }
+
+    .status-present {
+      color: var(--electric-green);
+    }
+
+    .status-absent {
+      color: var(--error-red);
     }
 
     /* Mobile Cards */
-    #cardsContainer {
+    .cards-container {
       display: none;
-      gap: 1rem;
-      margin: 2rem 0;
+      padding: 0 1.5rem 2rem;
     }
 
-    .card {
-      background: white;
+    .intern-card {
+      background: rgba(26, 26, 46, 0.6);
       border-radius: 16px;
       padding: 1.5rem;
-      box-shadow: 0 5px 15px rgba(67, 97, 238, 0.08);
+      margin-bottom: 1rem;
+      border: 1px solid rgba(0, 245, 255, 0.2);
       transition: all 0.3s ease;
-      animation: fadeInUp 0.5s ease-out;
+      backdrop-filter: blur(10px);
+      animation: fadeIn 0.5s ease-out;
+      will-change: transform;
     }
 
-    .card:hover {
+    .intern-card:hover {
       transform: translateY(-3px);
-      box-shadow: 0 8px 25px rgba(67, 97, 238, 0.15);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+      border-color: var(--neon-blue);
     }
 
     .card-row {
       display: flex;
       justify-content: space-between;
-      margin-bottom: 0.8rem;
+      margin-bottom: 1rem;
       align-items: center;
     }
 
     .card-label {
-      font-weight: 500;
-      color: var(--dark);
-      opacity: 0.8;
-      font-size: 0.9rem;
+      font-size: 0.85rem;
+      color: rgba(230, 241, 255, 0.7);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
     }
 
     .card-value {
       font-weight: 600;
-      color: var(--primary-dark);
+      color: var(--star-white);
     }
 
-    .card-select {
-      width: 100%;
-      padding: 0.7rem 1rem;
-      margin-top: 0.5rem;
-    }
-
-    /* Buttons */
-    .btn-group {
+    /* Action Buttons */
+    .actions {
       display: flex;
       gap: 1rem;
-      margin-top: 2rem;
-      justify-content: center;
+      padding: 0 2rem 2rem;
       flex-wrap: wrap;
     }
 
-    button {
-      padding: 1rem 2rem;
+    .btn {
+      flex: 1;
+      min-width: 200px;
+      padding: 1.25rem 2rem;
       border-radius: 12px;
       border: none;
-      font-weight: 600;
+      font-weight: 700;
       font-size: 1rem;
       cursor: pointer;
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      display: inline-flex;
+      display: flex;
       align-items: center;
       justify-content: center;
-      gap: 0.5rem;
-      min-width: 200px;
+      gap: 0.75rem;
       position: relative;
       overflow: hidden;
       z-index: 1;
+      color: white;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
     }
 
-    button::before {
+    .btn::before {
       content: '';
       position: absolute;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
       z-index: -1;
-      transition: all 0.3s ease;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-    button:hover::before {
-      transform: scale(1.05);
+    .btn-download {
+      background: linear-gradient(135deg, var(--neon-purple), var(--neon-pink));
     }
 
-    #downloadBtn {
-      background: white;
-      color: var(--primary);
-      border: 1px solid var(--primary);
+    .btn-download::before {
+      background: linear-gradient(135deg, var(--neon-pink), var(--neon-purple));
+      opacity: 0;
     }
 
-    #downloadBtn::before {
-      background: white;
+    .btn-whatsapp {
+      background: linear-gradient(135deg, #25D366, #128C7E);
     }
 
-    #downloadBtn:hover {
-      color: white;
+    .btn-whatsapp::before {
+      background: linear-gradient(135deg, #128C7E, #25D366);
+      opacity: 0;
     }
 
-    #whatsappBtn {
-      background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
-      color: white;
-      box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3);
+    .btn:hover::before {
+      opacity: 1;
     }
 
-    #whatsappBtn::before {
-      background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
-    }
-
-    button:disabled {
+    .btn:disabled {
       opacity: 0.6;
       cursor: not-allowed;
       transform: none !important;
     }
 
-    button:disabled::before {
-      transform: none !important;
+    .btn:disabled::before {
+      opacity: 0 !important;
     }
 
-    /* Animations */
+    .btn i {
+      font-size: 1.2rem;
+    }
+
+    /* Floating Particles */
+    .particles {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    .particle {
+      position: absolute;
+      background: var(--neon-blue);
+      border-radius: 50%;
+      opacity: 0.5;
+      animation: floating 15s infinite linear;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .container {
+        border-radius: 20px;
+      }
+      
+      .header {
+        padding: 1.5rem 1rem 0.5rem;
+      }
+      
+      .form-grid {
+        grid-template-columns: 1fr;
+        padding: 0 1rem;
+      }
+      
+      .table-wrapper {
+        display: none;
+      }
+      
+      .cards-container {
+        display: block;
+        padding: 0 1rem 1.5rem;
+      }
+      
+      .actions {
+        padding: 0 1rem 1.5rem;
+        flex-direction: column;
+      }
+      
+      .btn {
+        width: 100%;
+      }
+    }
+
+    /* Micro-interactions */
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(20px); }
       to { opacity: 1; transform: translateY(0); }
     }
 
-    @keyframes slideUp {
+    @keyframes slideInUp {
       from { opacity: 0; transform: translateY(30px); }
       to { opacity: 1; transform: translateY(0); }
     }
 
-    @keyframes rotate {
-      from { transform: rotate(0deg); }
-      to { transform: rotate(360deg); }
+    /* Hover effects */
+    .hover-glow:hover {
+      animation: neon-border 1.5s infinite;
     }
 
-    @keyframes pulse {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.05); }
-      100% { transform: scale(1); }
+    /* Active state animations */
+    .btn:active {
+      transform: scale(0.98);
     }
 
-    /* Responsive */
-    @media (max-width: 768px) {
-      .container {
-        padding: 1.5rem;
-        border-radius: 20px;
-      }
-
-      h1 {
-        font-size: 2rem;
-      }
-
-      .subtitle {
-        font-size: 1rem;
-      }
-
-      .table-wrapper {
-        display: none;
-      }
-
-      #cardsContainer {
-        display: flex;
-      }
-
-      .btn-group {
-        flex-direction: column;
-      }
-
-      button {
-        width: 100%;
-      }
+    /* Loading animation */
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
     }
 
-    /* Floating Animation */
-    .floating {
-      animation: floating 3s ease-in-out infinite;
-    }
-
-    @keyframes floating {
-      0% { transform: translateY(0px); }
-      50% { transform: translateY(-10px); }
-      100% { transform: translateY(0px); }
-    }
-
-    /* Status Indicators */
-    .status-present {
-      color: var(--success);
-    }
-
-    .status-absent {
-      color: var(--danger);
+    .loading {
+      animation: spin 1s linear infinite;
     }
   </style>
 </head>
 <body>
-  <main class="container animate__animated animate__fadeIn">
-    <h1 class="animate__animated animate__fadeInDown">Thiranex Attendance Tracker</h1>
-    <p class="subtitle animate__animated animate__fadeIn animate__delay-1s">Mark attendance for your internship batch and download or share report</p>
+  <!-- Floating Particles Background -->
+  <div class="particles" id="particles"></div>
 
-    <div class="form-group animate__animated animate__fadeIn animate__delay-1s">
-      <label for="dateInput">Select Date</label>
-      <input type="date" id="dateInput" aria-required="true" />
+  <div class="container card-3d">
+    <div class="header">
+      <h1 class="animate__animated animate__fadeInDown">THIRANEX ATTENDANCE</h1>
+      <p class="animate__animated animate__fadeIn animate__delay-1s">Next-generation attendance tracking with real-time analytics and seamless reporting</p>
     </div>
 
-    <div class="form-group animate__animated animate__fadeIn animate__delay-1s">
-      <label for="batchSelect">Select Batch</label>
-      <select id="batchSelect" aria-required="true" onchange="loadBatch()">
-        <option value="" disabled selected>-- Select Batch --</option>
-        <option value="THX-0625-001">THX-0625-001</option>
-      </select>
+    <div class="form-grid animate__animated animate__fadeIn animate__delay-1s">
+      <div class="form-group">
+        <label for="dateInput">TRACKING DATE</label>
+        <input type="date" id="dateInput" class="form-control hover-glow" aria-required="true">
+      </div>
+
+      <div class="form-group">
+        <label for="batchSelect">INTERN BATCH</label>
+        <select id="batchSelect" class="form-control hover-glow" aria-required="true" onchange="loadBatch()">
+          <option value="" disabled selected>-- SELECT BATCH --</option>
+          <option value="THX-0625-001">THX-0625-001</option>
+        </select>
+      </div>
     </div>
 
-    <form id="attendanceForm">
-      <div class="table-wrapper animate__animated animate__fadeIn animate__delay-2s">
-        <table id="attendanceTable" style="display:none;">
-          <thead>
-            <tr>
-              <th scope="col">Intern ID</th>
-              <th scope="col">Name</th>
-              <th scope="col">Attendance</th>
-            </tr>
-          </thead>
-          <tbody id="tableBody"></tbody>
-        </table>
+    <div class="table-container">
+      <div class="table-wrapper" id="tableWrapper">
+        <div class="table-scroll">
+          <table id="attendanceTable" style="display:none;">
+            <thead>
+              <tr>
+                <th scope="col">INTERN ID</th>
+                <th scope="col">NAME</th>
+                <th scope="col">STATUS</th>
+              </tr>
+            </thead>
+            <tbody id="tableBody"></tbody>
+          </table>
+        </div>
       </div>
 
-      <div id="cardsContainer"></div>
+      <div class="cards-container" id="cardsContainer"></div>
+    </div>
 
-      <div class="btn-group animate__animated animate__fadeIn animate__delay-2s">
-        <button type="button" id="downloadBtn" onclick="downloadExcel()" disabled>
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-            <polyline points="7 10 12 15 17 10"></polyline>
-            <line x1="12" y1="15" x2="12" y2="3"></line>
-          </svg>
-          Download Report
-        </button>
-        <button type="button" id="whatsappBtn" onclick="sendWhatsapp()" disabled>
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-          </svg>
-          Send via WhatsApp
-        </button>
-      </div>
-    </form>
-  </main>
+    <div class="actions animate__animated animate__fadeIn animate__delay-2s">
+      <button type="button" id="downloadBtn" class="btn btn-download" onclick="downloadExcel()" disabled>
+        <i class="fas fa-file-export"></i> EXPORT REPORT
+      </button>
+      <button type="button" id="whatsappBtn" class="btn btn-whatsapp" onclick="sendWhatsapp()" disabled>
+        <i class="fab fa-whatsapp"></i> SEND VIA WHATSAPP
+      </button>
+    </div>
+  </div>
 
   <script>
     // Predefined batch interns data
@@ -488,8 +565,9 @@
       ],
     };
 
-    const whatsappNumber = "919465241129"; // Change to your WhatsApp target number, include country code without "+" or "00"
+    const whatsappNumber = "919465241129";
 
+    // DOM Elements
     const batchSelect = document.getElementById("batchSelect");
     const dateInput = document.getElementById("dateInput");
     const downloadBtn = document.getElementById("downloadBtn");
@@ -497,11 +575,41 @@
     const tableBody = document.getElementById("tableBody");
     const attendanceTable = document.getElementById("attendanceTable");
     const cardsContainer = document.getElementById("cardsContainer");
+    const tableWrapper = document.getElementById("tableWrapper");
 
     // Set default date to today
     const today = new Date().toISOString().split('T')[0];
     dateInput.value = today;
-    
+
+    // Create floating particles
+    function createParticles() {
+      const particlesEl = document.getElementById('particles');
+      const particleCount = window.innerWidth < 768 ? 30 : 50;
+      
+      for (let i = 0; i < particleCount; i++) {
+        const particle = document.createElement('div');
+        particle.classList.add('particle');
+        
+        // Random properties
+        const size = Math.random() * 5 + 2;
+        const posX = Math.random() * window.innerWidth;
+        const posY = Math.random() * window.innerHeight;
+        const delay = Math.random() * 15;
+        const duration = 10 + Math.random() * 20;
+        const color = `hsl(${Math.random() * 60 + 180}, 100%, 70%)`;
+        
+        particle.style.width = `${size}px`;
+        particle.style.height = `${size}px`;
+        particle.style.left = `${posX}px`;
+        particle.style.top = `${posY}px`;
+        particle.style.animationDelay = `${delay}s`;
+        particle.style.animationDuration = `${duration}s`;
+        particle.style.background = color;
+        
+        particlesEl.appendChild(particle);
+      }
+    }
+
     // Load batch interns into table & cards
     function loadBatch() {
       const batch = batchSelect.value;
@@ -512,73 +620,80 @@
 
       if (!batch) {
         attendanceTable.style.display = "none";
+        tableWrapper.style.display = "none";
         cardsContainer.style.display = "none";
         return;
       }
 
-      internsByBatch[batch].forEach((intern, idx) => {
-        // Table row
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-          <td>${intern.id}</td>
-          <td>${intern.name}</td>
-          <td>
-            <select class="attendance-select" name="status" aria-label="Attendance for ${intern.name}">
-              <option value="Present" selected>Present</option>
-              <option value="Absent">Absent</option>
-            </select>
-          </td>
-        `;
-        tableBody.appendChild(tr);
-
-        // Card (mobile)
-        const card = document.createElement("div");
-        card.className = "card";
-        card.innerHTML = `
-          <div class="card-row">
-            <div class="card-label">Intern ID</div>
-            <div class="card-value">${intern.id}</div>
-          </div>
-          <div class="card-row">
-            <div class="card-label">Name</div>
-            <div class="card-value">${intern.name}</div>
-          </div>
-          <div class="card-row">
-            <div class="card-label">Attendance</div>
-            <select class="card-select" name="status" aria-label="Attendance for ${intern.name}">
-              <option value="Present" selected>Present</option>
-              <option value="Absent">Absent</option>
-            </select>
-          </div>
-        `;
-        cardsContainer.appendChild(card);
-      });
-
+      // Add loading animation
+      tableBody.innerHTML = `<tr><td colspan="3" style="text-align: center; padding: 2rem;"><i class="fas fa-spinner loading" style="font-size: 2rem; color: var(--neon-blue);"></i></td></tr>`;
       attendanceTable.style.display = "table";
-      cardsContainer.style.display = "none";
+      tableWrapper.style.display = "block";
+      
+      // Simulate loading delay for better UX
+      setTimeout(() => {
+        tableBody.innerHTML = "";
+        
+        internsByBatch[batch].forEach((intern, idx) => {
+          // Table row
+          const tr = document.createElement("tr");
+          tr.className = "animate__animated animate__fadeIn";
+          tr.style.animationDelay = `${idx * 0.05}s`;
+          tr.innerHTML = `
+            <td>${intern.id}</td>
+            <td>${intern.name}</td>
+            <td>
+              <select class="status-select" name="status" aria-label="Attendance for ${intern.name}">
+                <option value="Present" selected class="status-present">Present</option>
+                <option value="Absent" class="status-absent">Absent</option>
+              </select>
+            </td>
+          `;
+          tableBody.appendChild(tr);
 
-      // Enable buttons only if date is selected
-      checkEnableButtons();
+          // Card (mobile)
+          const card = document.createElement("div");
+          card.className = "intern-card animate__animated animate__fadeIn";
+          card.style.animationDelay = `${idx * 0.05}s`;
+          card.innerHTML = `
+            <div class="card-row">
+              <span class="card-label">Intern ID</span>
+              <span class="card-value">${intern.id}</span>
+            </div>
+            <div class="card-row">
+              <span class="card-label">Name</span>
+              <span class="card-value">${intern.name}</span>
+            </div>
+            <div class="card-row">
+              <span class="card-label">Status</span>
+              <select class="status-select" name="status" aria-label="Attendance for ${intern.name}">
+                <option value="Present" selected class="status-present">Present</option>
+                <option value="Absent" class="status-absent">Absent</option>
+              </select>
+            </div>
+          `;
+          cardsContainer.appendChild(card);
+        });
+
+        // Enable buttons only if date is selected
+        checkEnableButtons();
+      }, 800);
     }
 
     // Show cards on mobile, table on desktop
     function handleResize() {
       if (window.innerWidth <= 768) {
         attendanceTable.style.display = "none";
-        cardsContainer.style.display = batchSelect.value ? "flex" : "none";
+        tableWrapper.style.display = "none";
+        cardsContainer.style.display = batchSelect.value ? "block" : "none";
       } else {
         attendanceTable.style.display = batchSelect.value ? "table" : "none";
+        tableWrapper.style.display = batchSelect.value ? "block" : "none";
         cardsContainer.style.display = "none";
       }
     }
 
-    window.addEventListener("resize", handleResize);
-    batchSelect.addEventListener("change", () => {
-      loadBatch();
-      handleResize();
-    });
-    dateInput.addEventListener("change", checkEnableButtons);
-
+    // Check if buttons should be enabled
     function checkEnableButtons() {
       const batchSelected = batchSelect.value !== "";
       const dateSelected = dateInput.value !== "";
@@ -600,13 +715,18 @@
       const batch = batchSelect.value;
       const date = dateInput.value;
       if (!date) {
-        alert("Please select a date.");
+        showAlert("Please select a date", "warning");
         return;
       }
       if (!batch) {
-        alert("Please select a batch.");
+        showAlert("Please select a batch", "warning");
         return;
       }
+
+      // Add loading state to button
+      const originalText = downloadBtn.innerHTML;
+      downloadBtn.innerHTML = `<i class="fas fa-spinner loading"></i> PROCESSING...`;
+      downloadBtn.disabled = true;
 
       let data = [["Date", "Intern Name", "Intern ID", "Batch", "Attendance"]];
 
@@ -620,7 +740,7 @@
         });
       } else {
         // Mobile read from cards
-        const cards = cardsContainer.querySelectorAll(".card");
+        const cards = cardsContainer.querySelectorAll(".intern-card");
         cards.forEach(card => {
           const internId = card.querySelector(".card-row:nth-child(1) .card-value").textContent.trim();
           const name = card.querySelector(".card-row:nth-child(2) .card-value").textContent.trim();
@@ -630,11 +750,20 @@
       }
 
       // Create workbook and worksheet
-      const ws = XLSX.utils.aoa_to_sheet(data);
-      const wb = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(wb, ws, "Attendance");
+      setTimeout(() => {
+        const ws = XLSX.utils.aoa_to_sheet(data);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "Attendance");
 
-      XLSX.writeFile(wb, `Thiranex_Attendance_${batch}_${date}.xlsx`);
+        XLSX.writeFile(wb, `Thiranex_Attendance_${batch}_${date}.xlsx`);
+        
+        // Restore button state
+        downloadBtn.innerHTML = originalText;
+        downloadBtn.disabled = false;
+        
+        // Show success animation
+        showAlert("Report downloaded successfully!", "success");
+      }, 1000);
     }
 
     // Prepare WhatsApp message and open chat
@@ -642,15 +771,20 @@
       const batch = batchSelect.value;
       const date = dateInput.value;
       if (!date || !batch) {
-        alert("Please select batch and date first.");
+        showAlert("Please select batch and date first", "warning");
         return;
       }
 
+      // Add loading state to button
+      const originalText = whatsappBtn.innerHTML;
+      whatsappBtn.innerHTML = `<i class="fas fa-spinner loading"></i> PREPARING...`;
+      whatsappBtn.disabled = true;
+
       let messageLines = [];
-      messageLines.push(`*Thiranex Attendance Report*`);
-      messageLines.push(`Date: ${date}`);
-      messageLines.push(`Batch: ${batch}`);
-      messageLines.push(`\nAttendance Summary:\n`);
+      messageLines.push(`*THIRANEX ATTENDANCE REPORT*`);
+      messageLines.push(`📅 Date: ${date}`);
+      messageLines.push(`👥 Batch: ${batch}`);
+      messageLines.push(`\n📊 Attendance Summary:\n`);
 
       let presentCount = 0, absentCount = 0;
 
@@ -658,32 +792,79 @@
         [...attendanceTable.tBodies[0].rows].forEach(row => {
           const name = row.cells[1].textContent.trim();
           const status = row.cells[2].querySelector("select").value;
-          messageLines.push(`- ${name}: ${status}`);
+          messageLines.push(`- ${name}: ${status === "Present" ? '✅ Present' : '❌ Absent'}`);
           if (status === "Present") presentCount++;
           else absentCount++;
         });
       } else {
-        const cards = cardsContainer.querySelectorAll(".card");
+        const cards = cardsContainer.querySelectorAll(".intern-card");
         cards.forEach(card => {
           const name = card.querySelector(".card-row:nth-child(2) .card-value").textContent.trim();
           const status = card.querySelector("select").value;
-          messageLines.push(`- ${name}: ${status}`);
+          messageLines.push(`- ${name}: ${status === "Present" ? '✅ Present' : '❌ Absent'}`);
           if (status === "Present") presentCount++;
           else absentCount++;
         });
       }
 
-      messageLines.push(`\nTotal Present: ${presentCount}`);
-      messageLines.push(`Total Absent: ${absentCount}`);
-      messageLines.push("\n*Note:* To get full report file, please download and share via WhatsApp manually.");
+      messageLines.push(`\n✅ Total Present: ${presentCount}`);
+      messageLines.push(`❌ Total Absent: ${absentCount}`);
+      messageLines.push(`\n*Note:* For detailed report, please download and share the Excel file.`);
 
       const message = encodeURIComponent(messageLines.join("\n"));
 
-      // WhatsApp API link for specific number, include country code without + or 00
-      const url = `https://wa.me/${whatsappNumber}?text=${message}`;
+      // Restore button state
+      whatsappBtn.innerHTML = originalText;
+      whatsappBtn.disabled = false;
 
+      // WhatsApp API link
+      const url = `https://wa.me/${whatsappNumber}?text=${message}`;
       window.open(url, "_blank");
     }
+
+    // Show alert notification
+    function showAlert(message, type) {
+      const alert = document.createElement('div');
+      alert.className = `alert alert-${type} animate__animated animate__fadeInUp`;
+      alert.style.position = 'fixed';
+      alert.style.bottom = '20px';
+      alert.style.right = '20px';
+      alert.style.padding = '1rem 1.5rem';
+      alert.style.borderRadius = '12px';
+      alert.style.background = type === 'success' ? 'var(--electric-green)' : type === 'warning' ? 'var(--warning-orange)' : 'var(--error-red)';
+      alert.style.color = 'var(--dark-space)';
+      alert.style.fontWeight = '600';
+      alert.style.boxShadow = '0 5px 15px rgba(0, 0, 0, 0.3)';
+      alert.style.zIndex = '1000';
+      alert.style.display = 'flex';
+      alert.style.alignItems = 'center';
+      alert.style.gap = '0.75rem';
+      alert.innerHTML = `
+        <i class="fas ${type === 'success' ? 'fa-check-circle' : type === 'warning' ? 'fa-exclamation-triangle' : 'fa-times-circle'}"></i>
+        ${message}
+      `;
+      
+      document.body.appendChild(alert);
+      
+      setTimeout(() => {
+        alert.classList.remove('animate__fadeInUp');
+        alert.classList.add('animate__fadeOutDown');
+        setTimeout(() => alert.remove(), 500);
+      }, 3000);
+    }
+
+    // Initialize
+    window.addEventListener('DOMContentLoaded', () => {
+      createParticles();
+      handleResize();
+    });
+
+    window.addEventListener("resize", handleResize);
+    batchSelect.addEventListener("change", () => {
+      loadBatch();
+      handleResize();
+    });
+    dateInput.addEventListener("change", checkEnableButtons);
   </script>
 </body>
 </html>
