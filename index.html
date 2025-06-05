@@ -2,223 +2,687 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Internship Attendance Tracker</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Thiranex Attendance Tracker</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+
   <style>
-    * {
-      box-sizing: border-box;
-      font-family: 'Inter', sans-serif;
+    :root {
+      --primary: #4361ee;
+      --primary-dark: #3a0ca3;
+      --primary-light: #4895ef;
+      --secondary: #f72585;
+      --accent: #4cc9f0;
+      --dark: #14213d;
+      --light: #f8f9fa;
+      --gray: #adb5bd;
+      --success: #2ecc71;
+      --warning: #f39c12;
+      --danger: #e74c3c;
     }
-    body {
+
+    /* Base Styles */
+    *, *::before, *::after {
+      box-sizing: border-box;
       margin: 0;
       padding: 0;
-      background: linear-gradient(120deg, #e0ecfc, #fdfbfb);
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+      color: var(--dark);
       min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      padding: 2rem 1rem;
+      line-height: 1.6;
     }
+
+    /* Glassmorphism Container */
     .container {
-      background: rgba(255, 255, 255, 0.7);
+      background: rgba(255, 255, 255, 0.85);
       backdrop-filter: blur(12px);
-      border-radius: 16px;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
-      padding: 30px 40px;
-      width: 100%;
-      max-width: 950px;
-      animation: fadeIn 0.6s ease;
+      -webkit-backdrop-filter: blur(12px);
+      border-radius: 24px;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      box-shadow: 0 8px 32px rgba(31, 38, 135, 0.15);
+      padding: 2.5rem;
+      max-width: 1000px;
+      margin: 0 auto;
+      position: relative;
+      overflow: hidden;
+      animation: fadeIn 0.6s ease-out;
     }
-    h2 {
+
+    .container::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(67, 97, 238, 0.1) 0%, rgba(255,255,255,0) 70%);
+      z-index: -1;
+      animation: rotate 20s linear infinite;
+    }
+
+    /* Typography */
+    h1 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      font-size: 2.8rem;
       text-align: center;
-      margin-bottom: 25px;
-      color: #1e3c72;
+      color: var(--primary-dark);
+      margin-bottom: 0.5rem;
+      background: linear-gradient(90deg, var(--primary-dark), var(--primary-light));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      letter-spacing: -0.5px;
     }
+
+    .subtitle {
+      text-align: center;
+      font-size: 1.1rem;
+      color: var(--dark);
+      opacity: 0.8;
+      margin-bottom: 2.5rem;
+      font-weight: 400;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* Form Elements */
+    .form-group {
+      margin-bottom: 1.8rem;
+      position: relative;
+    }
+
     label {
-      font-weight: 600;
       display: block;
-      margin: 10px 0 5px;
-      color: #333;
+      margin-bottom: 0.6rem;
+      font-weight: 500;
+      color: var(--dark);
+      font-size: 0.95rem;
     }
-    select, input[type="date"] {
+
+    input[type="date"], select {
       width: 100%;
-      padding: 12px;
-      margin-bottom: 15px;
-      border: 1px solid #ccc;
-      border-radius: 10px;
-      font-size: 15px;
+      padding: 1rem 1.2rem;
+      font-size: 1rem;
+      border-radius: 12px;
+      border: 1px solid rgba(67, 97, 238, 0.3);
+      background: rgba(255, 255, 255, 0.7);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      color: var(--dark);
+      font-weight: 500;
+      box-shadow: 0 2px 8px rgba(67, 97, 238, 0.05);
+      appearance: none;
     }
+
+    input[type="date"]:focus, select:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+      background: white;
+    }
+
+    /* Table Styles */
+    .table-wrapper {
+      border-radius: 16px;
+      overflow: hidden;
+      margin: 2rem 0;
+      box-shadow: 0 10px 30px rgba(67, 97, 238, 0.1);
+      animation: slideUp 0.5s ease-out;
+      transform-origin: top;
+    }
+
     table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 15px;
+      background: white;
+      min-width: 600px;
     }
+
+    thead {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+      color: white;
+    }
+
     th, td {
-      padding: 10px;
-      border: 1px solid #ddd;
-      text-align: center;
+      padding: 1.2rem 1.5rem;
+      text-align: left;
     }
+
     th {
-      background: #1e3c72;
-      color: white;
-    }
-    tr:nth-child(even) {
-      background-color: #f8f8f8;
-    }
-    button {
-      margin-top: 20px;
-      padding: 14px 18px;
-      width: 100%;
-      background: #1e3c72;
-      color: white;
-      border: none;
-      border-radius: 10px;
-      font-size: 16px;
       font-weight: 600;
+      letter-spacing: 0.5px;
+      font-family: 'Space Grotesk', sans-serif;
+    }
+
+    tbody tr {
+      border-bottom: 1px solid rgba(67, 97, 238, 0.1);
+      transition: all 0.3s ease;
+    }
+
+    tbody tr:last-child {
+      border-bottom: none;
+    }
+
+    tbody tr:hover {
+      background: rgba(67, 97, 238, 0.03);
+      transform: translateX(4px);
+    }
+
+    select.attendance-select {
+      padding: 0.6rem 1rem;
+      border-radius: 8px;
+      border: 1px solid rgba(67, 97, 238, 0.3);
+      background: rgba(67, 97, 238, 0.05);
+      font-weight: 500;
+      color: var(--primary-dark);
       cursor: pointer;
-      transition: background 0.3s ease;
+      transition: all 0.3s ease;
+      min-width: 120px;
     }
-    button:hover {
-      background: #1451b8;
+
+    select.attendance-select:hover {
+      background: rgba(67, 97, 238, 0.1);
+      border-color: var(--primary);
     }
+
+    /* Mobile Cards */
+    #cardsContainer {
+      display: none;
+      gap: 1rem;
+      margin: 2rem 0;
+    }
+
+    .card {
+      background: white;
+      border-radius: 16px;
+      padding: 1.5rem;
+      box-shadow: 0 5px 15px rgba(67, 97, 238, 0.08);
+      transition: all 0.3s ease;
+      animation: fadeInUp 0.5s ease-out;
+    }
+
+    .card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(67, 97, 238, 0.15);
+    }
+
+    .card-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.8rem;
+      align-items: center;
+    }
+
+    .card-label {
+      font-weight: 500;
+      color: var(--dark);
+      opacity: 0.8;
+      font-size: 0.9rem;
+    }
+
+    .card-value {
+      font-weight: 600;
+      color: var(--primary-dark);
+    }
+
+    .card-select {
+      width: 100%;
+      padding: 0.7rem 1rem;
+      margin-top: 0.5rem;
+    }
+
+    /* Buttons */
+    .btn-group {
+      display: flex;
+      gap: 1rem;
+      margin-top: 2rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    button {
+      padding: 1rem 2rem;
+      border-radius: 12px;
+      border: none;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      min-width: 200px;
+      position: relative;
+      overflow: hidden;
+      z-index: 1;
+    }
+
+    button::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+      z-index: -1;
+      transition: all 0.3s ease;
+    }
+
+    button:hover::before {
+      transform: scale(1.05);
+    }
+
+    #downloadBtn {
+      background: white;
+      color: var(--primary);
+      border: 1px solid var(--primary);
+    }
+
+    #downloadBtn::before {
+      background: white;
+    }
+
+    #downloadBtn:hover {
+      color: white;
+    }
+
+    #whatsappBtn {
+      background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
+      color: white;
+      box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3);
+    }
+
+    #whatsappBtn::before {
+      background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
+    }
+
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none !important;
+    }
+
+    button:disabled::before {
+      transform: none !important;
+    }
+
+    /* Animations */
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(20px); }
       to { opacity: 1; transform: translateY(0); }
     }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes rotate {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .container {
+        padding: 1.5rem;
+        border-radius: 20px;
+      }
+
+      h1 {
+        font-size: 2rem;
+      }
+
+      .subtitle {
+        font-size: 1rem;
+      }
+
+      .table-wrapper {
+        display: none;
+      }
+
+      #cardsContainer {
+        display: flex;
+      }
+
+      .btn-group {
+        flex-direction: column;
+      }
+
+      button {
+        width: 100%;
+      }
+    }
+
+    /* Floating Animation */
+    .floating {
+      animation: floating 3s ease-in-out infinite;
+    }
+
+    @keyframes floating {
+      0% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+      100% { transform: translateY(0px); }
+    }
+
+    /* Status Indicators */
+    .status-present {
+      color: var(--success);
+    }
+
+    .status-absent {
+      color: var(--danger);
+    }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h2>📋 Internship Attendance Tracker</h2>
+  <main class="container animate__animated animate__fadeIn">
+    <h1 class="animate__animated animate__fadeInDown">Thiranex Attendance Tracker</h1>
+    <p class="subtitle animate__animated animate__fadeIn animate__delay-1s">Mark attendance for your internship batch and download or share report</p>
 
-    <label for="dateInput">📅 Select Date</label>
-    <input type="date" id="dateInput"/>
+    <div class="form-group animate__animated animate__fadeIn animate__delay-1s">
+      <label for="dateInput">Select Date</label>
+      <input type="date" id="dateInput" aria-required="true" />
+    </div>
 
-    <label for="batchSelect">👥 Select Batch</label>
-    <select id="batchSelect" onchange="loadBatch()">
-      <option value="">-- Choose Batch --</option>
-      <option value="THX-0625-001">THX-0625-001</option>
-      
-    </select>
+    <div class="form-group animate__animated animate__fadeIn animate__delay-1s">
+      <label for="batchSelect">Select Batch</label>
+      <select id="batchSelect" aria-required="true" onchange="loadBatch()">
+        <option value="" disabled selected>-- Select Batch --</option>
+        <option value="THX-0625-001">THX-0625-001</option>
+      </select>
+    </div>
 
     <form id="attendanceForm">
-      <table id="attendanceTable" style="display:none;">
-        <thead>
-          <tr>
-            <th>Intern ID</th>
-            <th>Name</th>
-            <th>Attendance</th>
-          </tr>
-        </thead>
-        <tbody id="tableBody"></tbody>
-      </table>
+      <div class="table-wrapper animate__animated animate__fadeIn animate__delay-2s">
+        <table id="attendanceTable" style="display:none;">
+          <thead>
+            <tr>
+              <th scope="col">Intern ID</th>
+              <th scope="col">Name</th>
+              <th scope="col">Attendance</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody"></tbody>
+        </table>
+      </div>
 
-      <button type="button" onclick="downloadExcel()" id="downloadBtn" style="display:none;">📥 Download Excel Report</button>
+      <div id="cardsContainer"></div>
+
+      <div class="btn-group animate__animated animate__fadeIn animate__delay-2s">
+        <button type="button" id="downloadBtn" onclick="downloadExcel()" disabled>
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
+          </svg>
+          Download Report
+        </button>
+        <button type="button" id="whatsappBtn" onclick="sendWhatsapp()" disabled>
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+          </svg>
+          Send via WhatsApp
+        </button>
+      </div>
     </form>
-  </div>
+  </main>
 
   <script>
+    // Predefined batch interns data
     const internsByBatch = {
-"THX-0625-001": [
-{ id: "2506001", name: "Rachana Rao" },
-{ id: "2506002", name: "Ashwin" },
-{ id: "2506003", name: "Suruthi Sri.U" },
-{ id: "2506004", name: "Keerthisha M" },
-{ id: "2506005", name: "Siva Rao P" },
-{ id: "2506006", name: "MOHANRAJ G" },
-{ id: "2506007", name: "BALAMURUGAN M" },
-{ id: "2506008", name: "KARTHIGA B S" },
-{ id: "2506009", name: "Sangeetha" },
-{ id: "2506010", name: "Thanu Sree G" },
-{ id: "2506011", name: "Pavithra.P" },
-{ id: "2506012", name: "Sandhiya.R" },
-{ id: "2506013", name: "Dharani P" },
-{ id: "2506014", name: "Keerthika A" },
-{ id: "2506015", name: "Sivaranjani" },
-{ id: "2506016", name: "Sanjay Gopal M S" },
-{ id: "2506017", name: "V.Sivapriya" },
-{ id: "2506018", name: "S.kayalvizhi" },
-{ id: "2506019", name: "Mancy k" },
-{ id: "2506020", name: "Prema.S" },
-{ id: "2506021", name: "Dinesh M" },
-{ id: "2506022", name: "Aaishwarya.R" },
-{ id: "2506023", name: "Yogalakshmi Baskar" },
-{ id: "2506024", name: "DAKSHINAMOORTHY.B" },
-{ id: "2506025", name: "Selvaganapathi B" },
-{ id: "2506026", name: "Krutvi . G" },
-{ id: "2506027", name: "Abilasha S" },
-{ id: "2506028", name: "Dhatchayini D" },
-{ id: "2506029", name: "Anbarasi B" },
-{ id: "2506030", name: "Mahalakshmi T" },
-{ id: "2506031", name: "Madhuvanthi Rajan" },
-{ id: "2506032", name: "SHARMILA P" },
-{ id: "2506033", name: "Moganapriya.S" },
-{ id: "2506034", name: "Vishnu Sai Raju.D" },
-{ id: "2506035", name: "Vasudev s" },
- ]
-
+      "THX-0625-001": [
+        { id: "2506001", name: "Rachana Rao" },
+        { id: "2506002", name: "Ashwin" },
+        { id: "2506003", name: "Suruthi Sri.U" },
+        { id: "2506004", name: "Keerthisha M" },
+        { id: "2506005", name: "Siva Rao P" },
+        { id: "2506006", name: "MOHANRAJ G" },
+        { id: "2506007", name: "BALAMURUGAN M" },
+        { id: "2506008", name: "KARTHIGA B S" },
+        { id: "2506009", name: "Sangeetha" },
+        { id: "2506010", name: "Thanu Sree G" },
+        { id: "2506011", name: "Pavithra.P" },
+        { id: "2506012", name: "Sandhiya.R" },
+        { id: "2506013", name: "Dharani P" },
+        { id: "2506014", name: "Keerthika A" },
+        { id: "2506015", name: "Sivaranjani" },
+        { id: "2506016", name: "Sanjay Gopal M S" },
+        { id: "2506017", name: "V.Sivapriya" },
+        { id: "2506018", name: "S.kayalvizhi" },
+        { id: "2506019", name: "Mancy k" },
+        { id: "2506020", name: "Prema.S" },
+        { id: "2506021", name: "Dinesh M" },
+        { id: "2506022", name: "Aaishwarya.R" },
+        { id: "2506023", name: "Yogalakshmi Baskar" },
+        { id: "2506024", name: "DAKSHINAMOORTHY.B" },
+        { id: "2506025", name: "Selvaganapathi B" },
+        { id: "2506026", name: "Krutvi . G" },
+        { id: "2506027", name: "Abilasha S" },
+        { id: "2506028", name: "Dhatchayini D" },
+        { id: "2506029", name: "Anbarasi B" },
+        { id: "2506030", name: "Mahalakshmi T" },
+        { id: "2506031", name: "Madhuvanthi Rajan" },
+        { id: "2506032", name: "SHARMILA P" },
+        { id: "2506033", name: "Moganapriya.S" },
+        { id: "2506034", name: "Vishnu Sai Raju.D" },
+        { id: "2506035", name: "Vasudev s" },
+      ],
     };
 
-    // Prefill today's date
-    document.getElementById("dateInput").valueAsDate = new Date();
+    const whatsappNumber = "919465241129"; // Change to your WhatsApp target number, include country code without "+" or "00"
 
+    const batchSelect = document.getElementById("batchSelect");
+    const dateInput = document.getElementById("dateInput");
+    const downloadBtn = document.getElementById("downloadBtn");
+    const whatsappBtn = document.getElementById("whatsappBtn");
+    const tableBody = document.getElementById("tableBody");
+    const attendanceTable = document.getElementById("attendanceTable");
+    const cardsContainer = document.getElementById("cardsContainer");
+
+    // Set default date to today
+    const today = new Date().toISOString().split('T')[0];
+    dateInput.value = today;
+    
+    // Load batch interns into table & cards
     function loadBatch() {
-      const batch = document.getElementById("batchSelect").value;
-      const tbody = document.getElementById("tableBody");
-      const table = document.getElementById("attendanceTable");
-      const downloadBtn = document.getElementById("downloadBtn");
+      const batch = batchSelect.value;
+      tableBody.innerHTML = "";
+      cardsContainer.innerHTML = "";
+      downloadBtn.disabled = true;
+      whatsappBtn.disabled = true;
 
-      tbody.innerHTML = '';
       if (!batch) {
-        table.style.display = 'none';
-        downloadBtn.style.display = 'none';
+        attendanceTable.style.display = "none";
+        cardsContainer.style.display = "none";
         return;
       }
 
-      internsByBatch[batch].forEach(intern => {
-        const row = document.createElement("tr");
-        row.innerHTML = `
+      internsByBatch[batch].forEach((intern, idx) => {
+        // Table row
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
           <td>${intern.id}</td>
           <td>${intern.name}</td>
           <td>
-            <select>
-              <option value="Present">Present</option>
+            <select class="attendance-select" name="status" aria-label="Attendance for ${intern.name}">
+              <option value="Present" selected>Present</option>
               <option value="Absent">Absent</option>
             </select>
           </td>
         `;
-        tbody.appendChild(row);
+        tableBody.appendChild(tr);
+
+        // Card (mobile)
+        const card = document.createElement("div");
+        card.className = "card";
+        card.innerHTML = `
+          <div class="card-row">
+            <div class="card-label">Intern ID</div>
+            <div class="card-value">${intern.id}</div>
+          </div>
+          <div class="card-row">
+            <div class="card-label">Name</div>
+            <div class="card-value">${intern.name}</div>
+          </div>
+          <div class="card-row">
+            <div class="card-label">Attendance</div>
+            <select class="card-select" name="status" aria-label="Attendance for ${intern.name}">
+              <option value="Present" selected>Present</option>
+              <option value="Absent">Absent</option>
+            </select>
+          </div>
+        `;
+        cardsContainer.appendChild(card);
       });
 
-      table.style.display = 'table';
-      downloadBtn.style.display = 'block';
+      attendanceTable.style.display = "table";
+      cardsContainer.style.display = "none";
+
+      // Enable buttons only if date is selected
+      checkEnableButtons();
     }
 
-    function downloadExcel() {
-      const batch = document.getElementById("batchSelect").value;
-      const date = document.getElementById("dateInput").value;
+    // Show cards on mobile, table on desktop
+    function handleResize() {
+      if (window.innerWidth <= 768) {
+        attendanceTable.style.display = "none";
+        cardsContainer.style.display = batchSelect.value ? "flex" : "none";
+      } else {
+        attendanceTable.style.display = batchSelect.value ? "table" : "none";
+        cardsContainer.style.display = "none";
+      }
+    }
 
-      if (!date || !batch) {
-        alert("Please select both date and batch!");
+    window.addEventListener("resize", handleResize);
+    batchSelect.addEventListener("change", () => {
+      loadBatch();
+      handleResize();
+    });
+    dateInput.addEventListener("change", checkEnableButtons);
+
+    function checkEnableButtons() {
+      const batchSelected = batchSelect.value !== "";
+      const dateSelected = dateInput.value !== "";
+      downloadBtn.disabled = !(batchSelected && dateSelected);
+      whatsappBtn.disabled = !(batchSelected && dateSelected);
+      
+      if (!downloadBtn.disabled) {
+        downloadBtn.classList.add('animate__animated', 'animate__pulse');
+        whatsappBtn.classList.add('animate__animated', 'animate__pulse');
+        setTimeout(() => {
+          downloadBtn.classList.remove('animate__animated', 'animate__pulse');
+          whatsappBtn.classList.remove('animate__animated', 'animate__pulse');
+        }, 1000);
+      }
+    }
+
+    // Download Excel report
+    function downloadExcel() {
+      const batch = batchSelect.value;
+      const date = dateInput.value;
+      if (!date) {
+        alert("Please select a date.");
+        return;
+      }
+      if (!batch) {
+        alert("Please select a batch.");
         return;
       }
 
-      const table = document.getElementById("attendanceTable");
-      const data = [["Date", "Intern Name", "Intern ID", "Batch", "Attendance"]];
+      let data = [["Date", "Intern Name", "Intern ID", "Batch", "Attendance"]];
 
-      [...table.rows].slice(1).forEach(row => {
-        const internId = row.cells[0].innerText;
-        const name = row.cells[1].innerText;
-        const status = row.cells[2].querySelector("select").value;
-        data.push([date, name, internId, batch, status]);
-      });
+      if (window.innerWidth > 768) {
+        // Desktop read from table
+        [...attendanceTable.tBodies[0].rows].forEach(row => {
+          const internId = row.cells[0].textContent.trim();
+          const name = row.cells[1].textContent.trim();
+          const status = row.cells[2].querySelector("select").value;
+          data.push([date, name, internId, batch, status]);
+        });
+      } else {
+        // Mobile read from cards
+        const cards = cardsContainer.querySelectorAll(".card");
+        cards.forEach(card => {
+          const internId = card.querySelector(".card-row:nth-child(1) .card-value").textContent.trim();
+          const name = card.querySelector(".card-row:nth-child(2) .card-value").textContent.trim();
+          const status = card.querySelector("select").value;
+          data.push([date, name, internId, batch, status]);
+        });
+      }
 
-      const worksheet = XLSX.utils.aoa_to_sheet(data);
-      const workbook = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(workbook, worksheet, "Attendance");
+      // Create workbook and worksheet
+      const ws = XLSX.utils.aoa_to_sheet(data);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "Attendance");
 
-      XLSX.writeFile(workbook, `Attendance_${batch}_${date}.xlsx`);
+      XLSX.writeFile(wb, `Thiranex_Attendance_${batch}_${date}.xlsx`);
+    }
+
+    // Prepare WhatsApp message and open chat
+    function sendWhatsapp() {
+      const batch = batchSelect.value;
+      const date = dateInput.value;
+      if (!date || !batch) {
+        alert("Please select batch and date first.");
+        return;
+      }
+
+      let messageLines = [];
+      messageLines.push(`*Thiranex Attendance Report*`);
+      messageLines.push(`Date: ${date}`);
+      messageLines.push(`Batch: ${batch}`);
+      messageLines.push(`\nAttendance Summary:\n`);
+
+      let presentCount = 0, absentCount = 0;
+
+      if (window.innerWidth > 768) {
+        [...attendanceTable.tBodies[0].rows].forEach(row => {
+          const name = row.cells[1].textContent.trim();
+          const status = row.cells[2].querySelector("select").value;
+          messageLines.push(`- ${name}: ${status}`);
+          if (status === "Present") presentCount++;
+          else absentCount++;
+        });
+      } else {
+        const cards = cardsContainer.querySelectorAll(".card");
+        cards.forEach(card => {
+          const name = card.querySelector(".card-row:nth-child(2) .card-value").textContent.trim();
+          const status = card.querySelector("select").value;
+          messageLines.push(`- ${name}: ${status}`);
+          if (status === "Present") presentCount++;
+          else absentCount++;
+        });
+      }
+
+      messageLines.push(`\nTotal Present: ${presentCount}`);
+      messageLines.push(`Total Absent: ${absentCount}`);
+      messageLines.push("\n*Note:* To get full report file, please download and share via WhatsApp manually.");
+
+      const message = encodeURIComponent(messageLines.join("\n"));
+
+      // WhatsApp API link for specific number, include country code without + or 00
+      const url = `https://wa.me/${whatsappNumber}?text=${message}`;
+
+      window.open(url, "_blank");
     }
   </script>
 </body>
