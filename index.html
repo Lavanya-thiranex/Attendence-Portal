@@ -1,33 +1,53 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>THIRANEX - Internship Attendance Tracker</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Internship Attendance Tracker</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet"/>
   <style>
+    * {
+      box-sizing: border-box;
+      font-family: 'Inter', sans-serif;
+    }
     body {
-      font-family: 'Segoe UI', sans-serif;
-      background: #f2f6fc;
-      padding: 30px;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(120deg, #e0ecfc, #fdfbfb);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
     .container {
-      max-width: 900px;
-      margin: auto;
-      background: white;
-      padding: 25px;
-      border-radius: 12px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(12px);
+      border-radius: 16px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+      padding: 30px 40px;
+      width: 100%;
+      max-width: 950px;
+      animation: fadeIn 0.6s ease;
     }
     h2 {
       text-align: center;
-      color: #2e86de;
+      margin-bottom: 25px;
+      color: #1e3c72;
     }
-    select, button, input[type="date"] {
-      padding: 10px;
-      margin: 10px 0;
+    label {
+      font-weight: 600;
+      display: block;
+      margin: 10px 0 5px;
+      color: #333;
+    }
+    select, input[type="date"] {
       width: 100%;
-      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 15px;
       border: 1px solid #ccc;
+      border-radius: 10px;
+      font-size: 15px;
     }
     table {
       width: 100%;
@@ -35,26 +55,49 @@
       margin-top: 15px;
     }
     th, td {
+      padding: 10px;
       border: 1px solid #ddd;
-      padding: 8px;
       text-align: center;
     }
     th {
-      background-color: #2e86de;
+      background: #1e3c72;
       color: white;
+    }
+    tr:nth-child(even) {
+      background-color: #f8f8f8;
+    }
+    button {
+      margin-top: 20px;
+      padding: 14px 18px;
+      width: 100%;
+      background: #1e3c72;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    button:hover {
+      background: #1451b8;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h2>Thiranex Internship Attendance Tracker</h2>
+    <h2>📋 Internship Attendance Tracker</h2>
 
-    <label for="dateInput">Select Date:</label>
-    <input type="date" id="dateInput" />
+    <label for="dateInput">📅 Select Date</label>
+    <input type="date" id="dateInput"/>
 
-    <label for="batchSelect">Select Batch:</label>
+    <label for="batchSelect">👥 Select Batch</label>
     <select id="batchSelect" onchange="loadBatch()">
-      <option value="">-- Select Batch --</option>
+      <option value="">-- Choose Batch --</option>
       <option value="THX-0625-001">THX-0625-001</option>
       
     </select>
@@ -71,13 +114,13 @@
         <tbody id="tableBody"></tbody>
       </table>
 
-      <button type="button" onclick="downloadExcel()" style="display:none;" id="downloadBtn">Download Attendance Report</button>
+      <button type="button" onclick="downloadExcel()" id="downloadBtn" style="display:none;">📥 Download Excel Report</button>
     </form>
   </div>
 
   <script>
     const internsByBatch = {
-      "THX-0625-001": [
+"THX-0625-001": [
 { id: "2506001", name: "Rachana Rao" },
 { id: "2506002", name: "Ashwin" },
 { id: "2506003", name: "Suruthi Sri.U" },
@@ -113,8 +156,12 @@
 { id: "2506033", name: "Moganapriya.S" },
 { id: "2506034", name: "Vishnu Sai Raju.D" },
 { id: "2506035", name: "Vasudev s" },
-      ],
+ ]
+
     };
+
+    // Prefill today's date
+    document.getElementById("dateInput").valueAsDate = new Date();
 
     function loadBatch() {
       const batch = document.getElementById("batchSelect").value;
@@ -123,7 +170,7 @@
       const downloadBtn = document.getElementById("downloadBtn");
 
       tbody.innerHTML = '';
-      if (batch === '') {
+      if (!batch) {
         table.style.display = 'none';
         downloadBtn.style.display = 'none';
         return;
@@ -135,7 +182,7 @@
           <td>${intern.id}</td>
           <td>${intern.name}</td>
           <td>
-            <select name="status">
+            <select>
               <option value="Present">Present</option>
               <option value="Absent">Absent</option>
             </select>
@@ -150,13 +197,14 @@
 
     function downloadExcel() {
       const batch = document.getElementById("batchSelect").value;
-      const table = document.getElementById("attendanceTable");
       const date = document.getElementById("dateInput").value;
-      if (!date) {
-        alert("Please select a date.");
+
+      if (!date || !batch) {
+        alert("Please select both date and batch!");
         return;
       }
 
+      const table = document.getElementById("attendanceTable");
       const data = [["Date", "Intern Name", "Intern ID", "Batch", "Attendance"]];
 
       [...table.rows].slice(1).forEach(row => {
