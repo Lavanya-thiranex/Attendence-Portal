@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>THIRANEX - Internship Attendance Tracker</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f2f6fc;
+      padding: 30px;
+    }
+    .container {
+      max-width: 900px;
+      margin: auto;
+      background: white;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    }
+    h2 {
+      text-align: center;
+      color: #2e86de;
+    }
+    select, button, input[type="date"] {
+      padding: 10px;
+      margin: 10px 0;
+      width: 100%;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: center;
+    }
+    th {
+      background-color: #2e86de;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Thiranex Internship Attendance Tracker</h2>
+
+    <label for="dateInput">Select Date:</label>
+    <input type="date" id="dateInput" />
+
+    <label for="batchSelect">Select Batch:</label>
+    <select id="batchSelect" onchange="loadBatch()">
+      <option value="">-- Select Batch --</option>
+      <option value="THX-0625-001">THX-0625-001</option>
+      
+    </select>
+
+    <form id="attendanceForm">
+      <table id="attendanceTable" style="display:none;">
+        <thead>
+          <tr>
+            <th>Intern ID</th>
+            <th>Name</th>
+            <th>Attendance</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+      </table>
+
+      <button type="button" onclick="downloadExcel()" style="display:none;" id="downloadBtn">Download Attendance Report</button>
+    </form>
+  </div>
+
+  <script>
+    const internsByBatch = {
+      "THX-0625-001": [
+{ id: "2506001", name: "Rachana Rao" },
+{ id: "2506002", name: "Ashwin" },
+{ id: "2506003", name: "Suruthi Sri.U" },
+{ id: "2506004", name: "Keerthisha M" },
+{ id: "2506005", name: "Siva Rao P" },
+{ id: "2506006", name: "MOHANRAJ G" },
+{ id: "2506007", name: "BALAMURUGAN M" },
+{ id: "2506008", name: "KARTHIGA B S" },
+{ id: "2506009", name: "Sangeetha" },
+{ id: "2506010", name: "Thanu Sree G" },
+{ id: "2506011", name: "Pavithra.P" },
+{ id: "2506012", name: "Sandhiya.R" },
+{ id: "2506013", name: "Dharani P" },
+{ id: "2506014", name: "Keerthika A" },
+{ id: "2506015", name: "Sivaranjani" },
+{ id: "2506016", name: "Sanjay Gopal M S" },
+{ id: "2506017", name: "V.Sivapriya" },
+{ id: "2506018", name: "S.kayalvizhi" },
+{ id: "2506019", name: "Mancy k" },
+{ id: "2506020", name: "Prema.S" },
+{ id: "2506021", name: "Dinesh M" },
+{ id: "2506022", name: "Aaishwarya.R" },
+{ id: "2506023", name: "Yogalakshmi Baskar" },
+{ id: "2506024", name: "DAKSHINAMOORTHY.B" },
+{ id: "2506025", name: "Selvaganapathi B" },
+{ id: "2506026", name: "Krutvi . G" },
+{ id: "2506027", name: "Abilasha S" },
+{ id: "2506028", name: "Dhatchayini D" },
+{ id: "2506029", name: "Anbarasi B" },
+{ id: "2506030", name: "Mahalakshmi T" },
+{ id: "2506031", name: "Madhuvanthi Rajan" },
+{ id: "2506032", name: "SHARMILA P" },
+{ id: "2506033", name: "Moganapriya.S" },
+{ id: "2506034", name: "Vishnu Sai Raju.D" },
+{ id: "2506035", name: "Vasudev s" },
+      ],
+    };
+
+    function loadBatch() {
+      const batch = document.getElementById("batchSelect").value;
+      const tbody = document.getElementById("tableBody");
+      const table = document.getElementById("attendanceTable");
+      const downloadBtn = document.getElementById("downloadBtn");
+
+      tbody.innerHTML = '';
+      if (batch === '') {
+        table.style.display = 'none';
+        downloadBtn.style.display = 'none';
+        return;
+      }
+
+      internsByBatch[batch].forEach(intern => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${intern.id}</td>
+          <td>${intern.name}</td>
+          <td>
+            <select name="status">
+              <option value="Present">Present</option>
+              <option value="Absent">Absent</option>
+            </select>
+          </td>
+        `;
+        tbody.appendChild(row);
+      });
+
+      table.style.display = 'table';
+      downloadBtn.style.display = 'block';
+    }
+
+    function downloadExcel() {
+      const batch = document.getElementById("batchSelect").value;
+      const table = document.getElementById("attendanceTable");
+      const date = document.getElementById("dateInput").value;
+      if (!date) {
+        alert("Please select a date.");
+        return;
+      }
+
+      const data = [["Date", "Intern Name", "Intern ID", "Batch", "Attendance"]];
+
+      [...table.rows].slice(1).forEach(row => {
+        const internId = row.cells[0].innerText;
+        const name = row.cells[1].innerText;
+        const status = row.cells[2].querySelector("select").value;
+        data.push([date, name, internId, batch, status]);
+      });
+
+      const worksheet = XLSX.utils.aoa_to_sheet(data);
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, "Attendance");
+
+      XLSX.writeFile(workbook, `Attendance_${batch}_${date}.xlsx`);
+    }
+  </script>
+</body>
+</html>
