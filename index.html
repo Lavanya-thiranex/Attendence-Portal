@@ -368,8 +368,8 @@
     <header>
       <div class="logo">TAT</div>
       <div class="header-text">
-        <h1>Thiranex Attendance Tracker</h1>
-        <p class="subtitle">Mark and manage intern attendance</p>
+        <h1>Thiranex Interns Attendance Portal</h1>
+        <p class="subtitle">Mark and Export intern attendance</p>
       </div>
     </header>
 
@@ -384,7 +384,8 @@
           <label for="batchSelect">Batch</label>
           <select id="batchSelect">
             <option value="" disabled selected>Select batch</option>
-            <option value="THX-0625-001">THX-0625-001 (Web Dev)</option>
+            //IF NEEDED ADD BATCH HERE, ONCE ADDED USE SAME NAME FOR STUDENT DETAILS
+            <option value="THX-0625-001">THX-0625-001 (Web Developmednt)</option>
           </select>
         </div>
       </div>
@@ -435,7 +436,7 @@
   </div>
 
   <script>
-    // Sample data for Thiranex interns
+    //Sample data for Thiranex interns IF NEED ADD A DATA IN SAME FORMAT.
     const internsByBatch = {
       "THX-0625-001": [
         { id: "2506001", name: "Rachana Rao" },
@@ -530,7 +531,7 @@
 
         interns.forEach((intern, idx) => {
           // Randomly set some as present (for demo)
-          const isPresent = Math.random() > 0;
+          const isPresent = Math.random() > 1;
           if (isPresent) presentCount++;
 
           // Table row
