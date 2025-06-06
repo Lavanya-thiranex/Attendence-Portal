@@ -6,20 +6,22 @@
   <title>Thiranex Attendance</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
   <style>
     :root {
-      --primary: #4361ee;
-      --primary-light: #e0e7ff;
-      --text: #1e293b;
-      --text-light: #64748b;
-      --bg: #f8fafc;
-      --surface: #ffffff;
-      --border: #e2e8f0;
-      --success: #10b981;
-      --error: #ef4444;
+      --primary: #4F46E5;  /* Thiranex purple */
+      --primary-light: #EEF2FF;
+      --primary-dark: #4338CA;
+      --text: #1F2937;
+      --text-light: #6B7280;
+      --bg: #F9FAFB;
+      --surface: #FFFFFF;
+      --border: #E5E7EB;
+      --success: #10B981;
+      --error: #EF4444;
+      --warning: #F59E0B;
     }
 
     * {
@@ -30,47 +32,76 @@
     }
 
     body {
-      font-family: 'Inter', sans-serif;
+      font-family: 'Poppins', sans-serif;
       background-color: var(--bg);
       color: var(--text);
       line-height: 1.5;
-      padding: 20px;
+      padding: 0;
       min-height: 100vh;
     }
 
     .container {
-      max-width: 900px;
+      max-width: 1000px;
       margin: 0 auto;
       background: var(--surface);
-      border-radius: 16px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
-      overflow: hidden;
-      animation: fadeIn 0.4s ease-out;
+      border-radius: 0;
+      min-height: 100vh;
+      box-shadow: 0 0 30px rgba(0, 0, 0, 0.05);
     }
 
+    /* Header with Thiranex branding */
     header {
       padding: 24px 32px;
-      border-bottom: 1px solid var(--border);
+      background: var(--primary);
+      color: white;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .logo {
+      width: 40px;
+      height: 40px;
+      background: white;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--primary);
+      font-weight: bold;
+      font-size: 18px;
+    }
+
+    .header-text {
+      flex: 1;
     }
 
     h1 {
-      font-size: 1.8rem;
-      font-weight: 700;
-      color: var(--text);
+      font-size: 1.5rem;
+      font-weight: 600;
       margin-bottom: 4px;
     }
 
     .subtitle {
-      color: var(--text-light);
-      font-size: 0.95rem;
+      font-size: 0.9rem;
+      opacity: 0.9;
+      font-weight: 400;
     }
 
-    .form-section {
+    /* Main content */
+    .main-content {
       padding: 24px 32px;
+    }
+
+    /* Form section */
+    .form-section {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
       gap: 20px;
-      border-bottom: 1px solid var(--border);
+      margin-bottom: 24px;
+      padding: 20px;
+      background: var(--primary-light);
+      border-radius: 12px;
     }
 
     .form-group {
@@ -89,7 +120,7 @@
       width: 100%;
       padding: 12px 16px;
       border: 1px solid var(--border);
-      border-radius: 10px;
+      border-radius: 8px;
       font-size: 0.95rem;
       background: var(--surface);
       transition: all 0.2s ease;
@@ -98,17 +129,16 @@
     input:focus, select:focus {
       outline: none;
       border-color: var(--primary);
-      box-shadow: 0 0 0 3px var(--primary-light);
+      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
     }
 
-    .content-section {
-      padding: 24px 32px;
-    }
-
+    /* Table styling */
     .table-container {
       overflow-x: auto;
       border-radius: 12px;
       border: 1px solid var(--border);
+      margin-bottom: 24px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
     }
 
     table {
@@ -131,6 +161,11 @@
       border-top: 1px solid var(--border);
     }
 
+    tr:nth-child(even) {
+      background-color: var(--bg);
+    }
+
+    /* Status select */
     .status-select {
       padding: 8px 12px;
       border-radius: 8px;
@@ -139,6 +174,7 @@
       font-weight: 500;
       cursor: pointer;
       transition: all 0.2s ease;
+      min-width: 120px;
     }
 
     .status-select:focus {
@@ -147,15 +183,21 @@
 
     .status-present {
       color: var(--success);
+      background-color: rgba(16, 185, 129, 0.1);
+      border-color: rgba(16, 185, 129, 0.3);
     }
 
     .status-absent {
       color: var(--error);
+      background-color: rgba(239, 68, 68, 0.1);
+      border-color: rgba(239, 68, 68, 0.3);
     }
 
+    /* Cards for mobile */
     .cards-container {
       display: none;
       gap: 12px;
+      margin-bottom: 24px;
     }
 
     .card {
@@ -163,12 +205,14 @@
       border-radius: 12px;
       padding: 16px;
       border: 1px solid var(--border);
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.03);
     }
 
     .card-row {
       display: flex;
       justify-content: space-between;
       margin-bottom: 12px;
+      align-items: center;
     }
 
     .card-label {
@@ -180,10 +224,10 @@
       font-weight: 500;
     }
 
+    /* Action buttons */
     .actions {
       display: flex;
       gap: 16px;
-      padding-top: 24px;
       flex-wrap: wrap;
     }
 
@@ -191,7 +235,7 @@
       flex: 1;
       min-width: 200px;
       padding: 14px 20px;
-      border-radius: 10px;
+      border-radius: 8px;
       border: none;
       font-weight: 600;
       cursor: pointer;
@@ -208,8 +252,9 @@
     }
 
     .btn-primary:hover {
-      background: #3a56d4;
+      background: var(--primary-dark);
       transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(79, 70, 229, 0.2);
     }
 
     .btn-secondary {
@@ -221,31 +266,35 @@
     .btn-secondary:hover {
       background: var(--primary-light);
       transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(79, 70, 229, 0.1);
     }
 
     .btn:disabled {
       opacity: 0.6;
       cursor: not-allowed;
       transform: none !important;
+      box-shadow: none !important;
     }
 
+    /* Animations */
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(10px); }
       to { opacity: 1; transform: translateY(0); }
     }
 
-    @keyframes pulse {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.02); }
-    }
-
+    /* Responsive styles */
     @media (max-width: 768px) {
-      .container {
-        border-radius: 12px;
+      header {
+        padding: 20px;
       }
       
-      header, .form-section, .content-section {
+      .main-content {
         padding: 20px;
+      }
+      
+      .form-section {
+        grid-template-columns: 1fr;
+        padding: 16px;
       }
       
       .table-container {
@@ -265,31 +314,100 @@
         width: 100%;
       }
     }
+
+    /* Status indicators */
+    .status-indicator {
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      margin-right: 8px;
+    }
+
+    .present-indicator {
+      background-color: var(--success);
+    }
+
+    .absent-indicator {
+      background-color: var(--error);
+    }
+
+    /* Summary stats */
+    .stats-container {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+
+    .stat-card {
+      flex: 1;
+      min-width: 150px;
+      background: white;
+      border-radius: 12px;
+      padding: 16px;
+      border: 1px solid var(--border);
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.03);
+    }
+
+    .stat-value {
+      font-size: 1.8rem;
+      font-weight: 600;
+      color: var(--primary);
+      margin-bottom: 4px;
+    }
+
+    .stat-label {
+      font-size: 0.85rem;
+      color: var(--text-light);
+    }
   </style>
 </head>
 <body>
   <div class="container animate__animated animate__fadeIn">
     <header>
-      <h1>Attendance Tracker</h1>
-      <p class="subtitle">Mark and manage intern attendance</p>
+      <div class="logo">TX</div>
+      <div class="header-text">
+        <h1>Thiranex Attendance Tracker</h1>
+        <p class="subtitle">Mark and manage intern attendance</p>
+      </div>
     </header>
 
-    <div class="form-section">
-      <div class="form-group">
-        <label>Date</label>
-        <input type="date" id="dateInput">
+    <div class="main-content">
+      <div class="form-section">
+        <div class="form-group">
+          <label for="dateInput">Date</label>
+          <input type="date" id="dateInput">
+        </div>
+
+        <div class="form-group">
+          <label for="batchSelect">Batch</label>
+          <select id="batchSelect">
+            <option value="" disabled selected>Select batch</option>
+            <option value="THX-0625-001">THX-0625-001 (Web Dev)</option>
+          </select>
+        </div>
       </div>
 
-      <div class="form-group">
-        <label>Batch</label>
-        <select id="batchSelect" onchange="loadBatch()">
-          <option value="" disabled selected>Select batch</option>
-          <option value="THX-0625-001">THX-0625-001</option>
-        </select>
+      <div class="stats-container" id="statsContainer" style="display: none;">
+        <div class="stat-card">
+          <div class="stat-value" id="totalCount">0</div>
+          <div class="stat-label">Total Interns</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="presentCount">0</div>
+          <div class="stat-label">Present</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="absentCount">0</div>
+          <div class="stat-label">Absent</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="attendancePercent">0%</div>
+          <div class="stat-label">Attendance</div>
+        </div>
       </div>
-    </div>
 
-    <div class="content-section">
       <div class="table-container">
         <table id="attendanceTable" style="display:none;">
           <thead>
@@ -306,29 +424,59 @@
       <div class="cards-container" id="cardsContainer"></div>
 
       <div class="actions">
-        <button id="downloadBtn" class="btn btn-primary" onclick="downloadExcel()" disabled>
-          <i class="fas fa-download"></i> Download
+        <button id="downloadBtn" class="btn btn-primary" disabled>
+          <i class="fas fa-file-excel"></i> Download Excel
         </button>
-        <button id="whatsappBtn" class="btn btn-secondary" onclick="sendWhatsapp()" disabled>
-          <i class="fab fa-whatsapp"></i> WhatsApp
+        <button id="whatsappBtn" class="btn btn-secondary" disabled>
+          <i class="fab fa-whatsapp"></i> Share via WhatsApp
         </button>
       </div>
     </div>
   </div>
 
   <script>
+    // Sample data for Thiranex interns
     const internsByBatch = {
       "THX-0625-001": [
         { id: "2506001", name: "Rachana Rao" },
-        { id: "2506002", name: "Ashwin" },
-        { id: "2506003", name: "Suruthi Sri.U" },
-        { id: "2506004", name: "Keerthisha M" },
-        { id: "2506005", name: "Siva Rao P" },
-        // ... (rest of your intern data)
-      ],
+{ id: "2506002", name: "Ashwin" },
+{ id: "2506003", name: "Suruthi Sri.U" },
+{ id: "2506004", name: "Keerthisha M" },
+{ id: "2506005", name: "Siva Rao P" },
+{ id: "2506006", name: "MOHANRAJ G" },
+{ id: "2506007", name: "BALAMURUGAN M" },
+{ id: "2506008", name: "KARTHIGA B S" },
+{ id: "2506009", name: "Sangeetha" },
+{ id: "2506010", name: "Thanu Sree G" },
+{ id: "2506011", name: "Pavithra.P" },
+{ id: "2506012", name: "Sandhiya.R" },
+{ id: "2506013", name: "Dharani P" },
+{ id: "2506014", name: "Keerthika A" },
+{ id: "2506015", name: "Sivaranjani" },
+{ id: "2506016", name: "Sanjay Gopal M S" },
+{ id: "2506017", name: "V.Sivapriya" },
+{ id: "2506018", name: "S.kayalvizhi" },
+{ id: "2506019", name: "Mancy k" },
+{ id: "2506020", name: "Prema.S" },
+{ id: "2506021", name: "Dinesh M" },
+{ id: "2506022", name: "Aaishwarya.R" },
+{ id: "2506023", name: "Yogalakshmi Baskar" },
+{ id: "2506024", name: "DAKSHINAMOORTHY.B" },
+{ id: "2506025", name: "Selvaganapathi B" },
+{ id: "2506026", name: "Krutvi . G" },
+{ id: "2506027", name: "Abilasha S" },
+{ id: "2506028", name: "Dhatchayini D" },
+{ id: "2506029", name: "Anbarasi B" },
+{ id: "2506030", name: "Mahalakshmi T" },
+{ id: "2506031", name: "Madhuvanthi Rajan" },
+{ id: "2506032", name: "SHARMILA P" },
+{ id: "2506033", name: "Moganapriya.S" },
+{ id: "2506034", name: "Vishnu Sai Raju.D" },
+{ id: "2506035", name: "Vasudev s" }
+      ]
     };
 
-    const whatsappNumber = "919465241129";
+    const whatsappNumber = "+919465241129";
 
     // DOM Elements
     const batchSelect = document.getElementById("batchSelect");
@@ -338,9 +486,16 @@
     const tableBody = document.getElementById("tableBody");
     const attendanceTable = document.getElementById("attendanceTable");
     const cardsContainer = document.getElementById("cardsContainer");
+    const statsContainer = document.getElementById("statsContainer");
+    const totalCountEl = document.getElementById("totalCount");
+    const presentCountEl = document.getElementById("presentCount");
+    const absentCountEl = document.getElementById("absentCount");
+    const attendancePercentEl = document.getElementById("attendancePercent");
 
     // Set default date to today
-    dateInput.value = new Date().toISOString().split('T')[0];
+    const today = new Date();
+    const formattedDate = today.toISOString().split('T')[0];
+    dateInput.value = formattedDate;
 
     function loadBatch() {
       const batch = batchSelect.value;
@@ -348,15 +503,36 @@
       cardsContainer.innerHTML = "";
       downloadBtn.disabled = true;
       whatsappBtn.disabled = true;
+      statsContainer.style.display = "none";
 
       if (!batch) {
         attendanceTable.style.display = "none";
         return;
       }
 
-      // Add slight delay for perceived performance
+      // Show loading state
+      if (window.innerWidth > 768) {
+        tableBody.innerHTML = `<tr><td colspan="3" style="text-align: center; padding: 40px;">Loading interns...</td></tr>`;
+        attendanceTable.style.display = "table";
+      } else {
+        cardsContainer.innerHTML = `<div class="card" style="text-align: center; padding: 30px;">Loading interns...</div>`;
+      }
+
+      // Simulate loading delay
       setTimeout(() => {
-        internsByBatch[batch].forEach((intern, idx) => {
+        const interns = internsByBatch[batch];
+        if (!interns) return;
+
+        tableBody.innerHTML = "";
+        cardsContainer.innerHTML = "";
+        
+        let presentCount = 0;
+
+        interns.forEach((intern, idx) => {
+          // Randomly set some as present (for demo)
+          const isPresent = Math.random() > 0.3;
+          if (isPresent) presentCount++;
+
           // Table row
           const tr = document.createElement("tr");
           tr.style.animationDelay = `${idx * 30}ms`;
@@ -365,9 +541,9 @@
             <td>${intern.id}</td>
             <td>${intern.name}</td>
             <td>
-              <select class="status-select">
-                <option value="Present" class="status-present">Present</option>
-                <option value="Absent" class="status-absent">Absent</option>
+              <select class="status-select ${isPresent ? 'status-present' : 'status-absent'}" onchange="updateStatus(this)">
+                <option value="Present" ${isPresent ? 'selected' : ''}>Present</option>
+                <option value="Absent" ${!isPresent ? 'selected' : ''}>Absent</option>
               </select>
             </td>
           `;
@@ -388,9 +564,9 @@
             </div>
             <div class="card-row">
               <span class="card-label">Status</span>
-              <select class="status-select">
-                <option value="Present" class="status-present">Present</option>
-                <option value="Absent" class="status-absent">Absent</option>
+              <select class="status-select ${isPresent ? 'status-present' : 'status-absent'}" onchange="updateStatus(this)">
+                <option value="Present" ${isPresent ? 'selected' : ''}>Present</option>
+                <option value="Absent" ${!isPresent ? 'selected' : ''}>Absent</option>
               </select>
             </div>
           `;
@@ -398,8 +574,57 @@
         });
 
         attendanceTable.style.display = "table";
+        statsContainer.style.display = "flex";
+        updateStats();
         checkEnableButtons();
-      }, 200);
+      }, 500);
+    }
+
+    function updateStatus(selectElement) {
+      // Update the class based on selected value
+      selectElement.className = 'status-select';
+      if (selectElement.value === 'Present') {
+        selectElement.classList.add('status-present');
+      } else {
+        selectElement.classList.add('status-absent');
+      }
+      updateStats();
+    }
+
+    function updateStats() {
+      const batch = batchSelect.value;
+      if (!batch) return;
+
+      const interns = internsByBatch[batch];
+      let presentCount = 0;
+      
+      // Count present interns
+      if (window.innerWidth > 768) {
+        presentCount = [...tableBody.querySelectorAll('.status-select')]
+          .filter(select => select.value === 'Present').length;
+      } else {
+        presentCount = [...cardsContainer.querySelectorAll('.status-select')]
+          .filter(select => select.value === 'Present').length;
+      }
+
+      const totalCount = interns.length;
+      const absentCount = totalCount - presentCount;
+      const attendancePercent = Math.round((presentCount / totalCount) * 100);
+
+      // Update stats
+      totalCountEl.textContent = totalCount;
+      presentCountEl.textContent = presentCount;
+      absentCountEl.textContent = absentCount;
+      attendancePercentEl.textContent = `${attendancePercent}%`;
+      
+      // Color coding for attendance percentage
+      if (attendancePercent >= 90) {
+        attendancePercentEl.style.color = '#10B981';
+      } else if (attendancePercent >= 70) {
+        attendancePercentEl.style.color = '#F59E0B';
+      } else {
+        attendancePercentEl.style.color = '#EF4444';
+      }
     }
 
     function checkEnableButtons() {
@@ -420,6 +645,7 @@
     function downloadExcel() {
       const batch = batchSelect.value;
       const date = dateInput.value;
+      const batchName = batchSelect.options[batchSelect.selectedIndex].text;
       
       if (!date || !batch) return;
 
@@ -428,25 +654,27 @@
       downloadBtn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Processing`;
       downloadBtn.disabled = true;
 
-      let data = [["Date", "Name", "ID", "Batch", "Status"]];
+      let data = [
+        ["Thiranex Intern Attendance Report"],
+        [`Batch: ${batchName}`],
+        [`Date: ${formatDate(date)}`],
+        [""],
+        ["Intern ID", "Name", "Status"]
+      ];
 
       const collectData = () => {
         if (window.innerWidth > 768) {
           // From table
           return [...tableBody.rows].map(row => [
-            date,
-            row.cells[1].textContent,
             row.cells[0].textContent,
-            batch,
+            row.cells[1].textContent,
             row.cells[2].querySelector("select").value
           ]);
         } else {
           // From cards
           return [...cardsContainer.children].map(card => [
-            date,
-            card.querySelector(".card-row:nth-child(2) .card-value").textContent,
             card.querySelector(".card-row:nth-child(1) .card-value").textContent,
-            batch,
+            card.querySelector(".card-row:nth-child(2) .card-value").textContent,
             card.querySelector("select").value
           ]);
         }
@@ -457,8 +685,15 @@
         
         const ws = XLSX.utils.aoa_to_sheet(data);
         const wb = XLSX.utils.book_new();
+        
+        // Merge title cells
+        if (!ws['!merges']) ws['!merges'] = [];
+        ws['!merges'].push({ s: { r: 0, c: 0 }, e: { r: 0, c: 4 } });
+        ws['!merges'].push({ s: { r: 1, c: 0 }, e: { r: 1, c: 4 } });
+        ws['!merges'].push({ s: { r: 2, c: 0 }, e: { r: 2, c: 4 } });
+        
         XLSX.utils.book_append_sheet(wb, ws, "Attendance");
-        XLSX.writeFile(wb, `Attendance_${batch}_${date}.xlsx`);
+        XLSX.writeFile(wb, `Thiranex_Attendance_${batch}_${date.replace(/-/g, '')}.xlsx`);
         
         // Reset button
         downloadBtn.innerHTML = originalText;
@@ -469,6 +704,8 @@
     function sendWhatsapp() {
       const batch = batchSelect.value;
       const date = dateInput.value;
+      const batchName = batchSelect.options[batchSelect.selectedIndex].text;
+      
       if (!date || !batch) return;
 
       // Button loading state
@@ -476,16 +713,27 @@
       whatsappBtn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Preparing`;
       whatsappBtn.disabled = true;
 
-      let message = [`*Thiranex Attendance - ${date}*`, `Batch: ${batch}`, ""];
+      let message = [
+        `*Thiranex Attendance Report*`,
+        `📅 Date: ${formatDate(date)}`,
+        `👥 Batch: ${batchName}`,
+        `----------------------------`,
+        `*Attendance Summary:*`,
+        `✅ Present: ${presentCountEl.textContent}`,
+        `❌ Absent: ${absentCountEl.textContent}`,
+        `📊 Attendance: ${attendancePercentEl.textContent}`,
+        `----------------------------`,
+        `*Intern Status:*`
+      ];
 
       const collectStatus = () => {
         if (window.innerWidth > 768) {
           return [...tableBody.rows].map(row => 
-            `${row.cells[1].textContent}: ${row.cells[2].querySelector("select").value}`
+            `${row.cells[1].textContent}: ${row.cells[2].querySelector("select").value === 'Present' ? '✅' : '❌'}`
           );
         } else {
           return [...cardsContainer.children].map(card => 
-            `${card.querySelector(".card-row:nth-child(2) .card-value").textContent}: ${card.querySelector("select").value}`
+            `${card.querySelector(".card-row:nth-child(2) .card-value").textContent}: ${card.querySelector("select").value === 'Present' ? '✅' : '❌'}`
           );
         }
       };
@@ -501,14 +749,28 @@
       }, 500);
     }
 
+    function formatDate(dateString) {
+      const options = { year: 'numeric', month: 'long', day: 'numeric' };
+      return new Date(dateString).toLocaleDateString('en-US', options);
+    }
+
     // Initialize
     window.addEventListener("resize", () => {
-      attendanceTable.style.display = window.innerWidth > 768 ? "table" : "none";
-      cardsContainer.style.display = window.innerWidth > 768 ? "none" : "flex";
+      if (window.innerWidth > 768) {
+        attendanceTable.style.display = "table";
+        cardsContainer.style.display = "none";
+      } else {
+        attendanceTable.style.display = "none";
+        cardsContainer.style.display = "flex";
+      }
     });
 
     dateInput.addEventListener("change", checkEnableButtons);
     batchSelect.addEventListener("change", loadBatch);
+    
+    // Set up button event listeners
+    downloadBtn.addEventListener("click", downloadExcel);
+    whatsappBtn.addEventListener("click", sendWhatsapp);
   </script>
 </body>
 </html>
